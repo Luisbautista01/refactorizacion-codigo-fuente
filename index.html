@@ -1,0 +1,568 @@
+
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#172b4d">
+    <meta name="description" content="Calculadora de media, mediana y desviación estándar poblacional.">
+    <title>Calculadora estadística | Universidad de Cartagena</title>
+
+    <style>
+        :root {
+            font-family: "Inter", "Segoe UI", Arial, sans-serif;
+            color: #263449;
+            background: #f2f5f9;
+            --azul: #2457a7;
+            --azul-oscuro: #172b4d;
+            --borde: #dce3ec;
+            --texto-secundario: #64748b;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            min-width: 420px;
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: var(--azul-oscuro);
+            color: white;
+            border-bottom: 3px solid #d6ad45;
+        }
+
+        .header-inner {
+            width: min(100% - 32px, 1400px);
+            min-height: 65px;
+            margin: auto;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo {
+            width: 43px;
+            height: 43px;
+            padding: 3px;
+            object-fit: contain;
+            background: white;
+            border-radius: 4px;
+        }
+
+        .institucion strong {
+            display: block;
+            font-size: 12px;
+            letter-spacing: .04em;
+        }
+
+        .institucion span {
+            display: block;
+            margin-top: 4px;
+            color: #dbe5f3;
+            font-size: 11px;
+        }
+
+        .header-tag {
+            margin-left: auto;
+            color: #f3df9d;
+            font-size: 11px;
+            text-align: right;
+        }
+
+        main {
+            width: min(100% - 32px, 1080px);
+            margin: 25px auto;
+            flex: 1;
+        }
+
+        .intro {
+            margin-bottom: 18px;
+        }
+
+        .eyebrow {
+            margin: 0 0 5px;
+            color: var(--azul);
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: .12em;
+        }
+
+        h1 {
+            margin: 0;
+            color: var(--azul-oscuro);
+            font-size: clamp(23px, 4vw, 30px);
+            letter-spacing: -.6px;
+        }
+
+        .descripcion {
+            margin: 7px 0 0;
+            color: var(--texto-secundario);
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .panel {
+            padding: 19px;
+            border: 1px solid var(--borde);
+            border-radius: 7px;
+            background: white;
+        }
+
+        .panel h2,
+        .resultados-heading h2 {
+            margin: 0;
+            color: var(--azul-oscuro);
+            font-size: 15px;
+        }
+
+        .ayuda {
+            margin: 5px 0 14px;
+            color: var(--texto-secundario);
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .form-row {
+            display: flex;
+            align-items: end;
+            gap: 10px;
+        }
+
+        .campo {
+            flex: 1;
+            min-width: 0;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        input {
+            width: 100%;
+            min-height: 41px;
+            padding: 10px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            outline: none;
+            font: inherit;
+            font-size: 13px;
+        }
+
+        input:focus {
+            border-color: var(--azul);
+            box-shadow: 0 0 0 3px #2457a71c;
+        }
+
+        .acciones {
+            display: flex;
+            gap: 7px;
+        }
+
+        button {
+            min-height: 39px;
+            padding: 9px 13px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            font: inherit;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        button:focus-visible {
+            outline: 3px solid #8bb7fa;
+            outline-offset: 2px;
+        }
+
+        .primario {
+            color: white;
+            background: var(--azul);
+        }
+
+        .primario:hover {
+            background: #194587;
+        }
+
+        .secundario {
+            color: #344054;
+            background: white;
+            border-color: #cbd5e1;
+        }
+
+        .secundario:hover {
+            background: #f1f5f9;
+        }
+
+        .resultados {
+            margin-top: 22px;
+        }
+
+        .resultados-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .contador {
+            padding: 5px 8px;
+            border-radius: 4px;
+            background: #e4edf9;
+            color: #2457a7;
+            font-size: 10px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .tabla-contenedor {
+            overflow-x: auto;
+            border: 1px solid #cbd5e1;
+            border-radius: 5px;
+            background: white;
+        }
+
+        .tabla {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            text-align: left;
+        }
+
+        .tabla th {
+            padding: 11px 12px;
+            border: 1px solid #c5d4e7;
+            background: #dce8f7;
+            color: #203b64;
+            font-weight: 750;
+            white-space: nowrap;
+            text-align: left;
+        }
+
+        .tabla td {
+            padding: 11px 12px;
+            border: 1px solid #e0e6ee;
+            vertical-align: middle;
+        }
+
+        .tabla tbody tr:nth-child(even) {
+            background: #f7f9fc;
+        }
+
+        .tabla tbody th.indicador {
+            min-width: 175px;
+            color: #263449;
+            background: transparent;
+            font-weight: 650;
+            white-space: normal;
+        }
+
+        .tabla tbody tr:hover {
+            background: #edf4ff;
+        }
+
+        .fila-numero {
+            width: 45px;
+            color: #64748b;
+            text-align: center;
+        }
+
+        .resultado-badge {
+            display: inline-block;
+            padding: 5px 9px;
+            border: 1px solid #a7dfbd;
+            border-radius: 999px;
+            color: #17663a;
+            background: #e8f7ed;
+            font-weight: 750;
+            font-variant-numeric: tabular-nums;
+            white-space: nowrap;
+            text-align: center;
+        }
+
+        .formula {
+            width: 100px;
+            min-width: 120px;
+            color: #334155;
+            vertical-align: top;
+        }
+
+        .aplicacion {
+            min-width: 260px;
+            color: #334155;
+            vertical-align: top;
+        }
+
+        .formula-etiqueta {
+            display: block;
+            margin-bottom: 3px;
+            color: #64748b;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .formula-ecuacion {
+            overflow-x: auto;
+            padding: 6px 8px;
+            border: 1px solid #e2ebf8;
+            border-radius: 4px;
+            background: #f3f7fd;
+        }
+
+        .formula-ecuacion math {
+            min-width: max-content;
+            font-family: "Cambria Math", "STIX Two Math", serif;
+            font-size: 14px;
+        }
+
+        .tabla-vacia {
+            padding: 18px !important;
+            color: var(--texto-secundario);
+            text-align: center;
+        }
+
+        .mensaje {
+            margin: 10px 0 0;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .mensaje:empty {
+            display: none;
+        }
+
+        .error {
+            color: #b42318;
+        }
+
+        .exito {
+            color: #267344;
+        }
+
+        .nota {
+            margin: 10px 0 0;
+            color: var(--texto-secundario);
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        footer {
+            padding: 14px;
+            border-top: 1px solid var(--borde);
+            color: #64748b;
+            font-size: 12px;
+            text-align: center;
+        }
+
+        @media (max-width: 600px) {
+            .header-inner {
+                width: calc(100% - 24px);
+                min-height: 61px;
+                gap: 9px;
+            }
+
+            .logo {
+                width: 37px;
+                height: 37px;
+            }
+
+            .institucion strong {
+                font-size: 10px;
+            }
+
+            .institucion span {
+                font-size: 10px;
+            }
+
+            .header-tag {
+                display: none;
+            }
+
+            main {
+                width: calc(100% - 24px);
+                margin: 19px auto;
+            }
+
+            .panel {
+                padding: 14px;
+            }
+
+            .form-row {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .acciones {
+                width: 100%;
+            }
+
+            .acciones button {
+                flex: 1;
+            }
+
+            .tabla {
+                min-width: 900px;
+            }
+
+            .tabla th,
+            .tabla td {
+                padding: 10px;
+            }
+
+            .descripcion {
+                font-size: 12px;
+            }
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+
+            .header {
+                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact;
+            }
+
+            .acciones,
+            form {
+                display: none;
+            }
+
+            main {
+                width: 100%;
+                margin: 15px auto;
+            }
+
+            .panel,
+            .tabla-contenedor {
+                break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <div class="header-inner">
+            <img
+                class="logo"
+                src="https://www.nicepng.com/png/detail/100-1000672_escudo-unicartagena-university-of-cartagena.png"
+                alt="Escudo de la Universidad de Cartagena"
+                onerror="this.style.display='none'"
+            >
+
+            <div class="institucion">
+                <strong>UNIVERSIDAD DE CARTAGENA</strong>
+                <span>Pruebas y mantenimiento de software</span>
+            </div>
+
+            <div class="header-tag">
+                Actividad 4<br>
+                Refactorización de código
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="intro">
+            <p class="eyebrow">HERRAMIENTA ACADÉMICA</p>
+            <h1>Calculadora estadística</h1>
+            <p class="descripcion">
+                Calcula y consulta las principales medidas estadísticas de una lista de números.
+            </p>
+        </section>
+
+        <section class="panel">
+            <h2>Entrada de datos</h2>
+            <p class="ayuda" id="ayuda-numeros">
+                Introduce números separados por comas. Se aceptan enteros y decimales con punto.
+            </p>
+
+            <form id="formulario">
+                <div class="form-row">
+                    <div class="campo">
+                        <label for="numeros">Lista de números</label>
+                        <input
+                            id="numeros"
+                            name="numeros"
+                            type="text"
+                            placeholder="Ejemplo: 1, 2, 3, 4, 5"
+                            autocomplete="off"
+                            aria-describedby="ayuda-numeros"
+                            required
+                        >
+                    </div>
+
+                    <div class="acciones">
+                        <button class="primario" type="submit">
+                            Calcular
+                        </button>
+
+                        <button
+                            class="secundario"
+                            id="boton-limpiar"
+                            type="button"
+                            hidden
+                        >
+                            Limpiar
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+            <p id="mensaje" class="mensaje" role="status" aria-live="polite"></p>
+        </section>
+
+        <section class="resultados" aria-labelledby="titulo-resultados">
+            <div class="resultados-heading">
+                <h2 id="titulo-resultados">Resultados del cálculo</h2>
+                <span id="cantidad-datos" class="contador">Sin datos</span>
+            </div>
+
+            <div class="tabla-contenedor">
+                <table class="tabla">
+                    <thead>
+                        <tr>
+                            <th class="fila-numero">N.º</th>
+                            <th>Indicador estadístico</th>
+                            <th>Fórmula</th>
+                            <th>Aplicación</th>
+                            <th>Resultado</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="estadisticas">
+                        <tr>
+                            <td colspan="5" class="tabla-vacia">
+                                Introduce una lista de números para ver los resultados.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p class="nota">
+                La desviación estándar se calcula como medida poblacional.
+                Los resultados se muestran con hasta cuatro decimales; los cálculos conservan su precisión interna.
+            </p>
+        </section>
+    </main>
+
+    <footer>
+        Actividad académica · Refactorización y mantenimiento de software
+    </footer>
+
+    <script src="estadisticas.js"></script>
+    <script src="web.js"></script>
+</body>
+</html>
